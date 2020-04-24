@@ -69,10 +69,12 @@ if (user){
   startRsvpButton.textContent ="Logout";
   guestbookContainer.style.display = "block";
   subscribeGuestbook();
+  subscribeCurrentRSVP(user);
 } else {
   startRsvpButton.textContent ="RSVP";
   guestbookContainer.style.display = "NONE";
   unsubscribeGuestbook();
+  unsubscribeCurrentRSVP();
 }
 })
 
@@ -129,4 +131,31 @@ function unsubscribeGuestbook(){
   .where("attending", "==", true).onSnapshot((snap)=>{
     const newAttendeeCount = snap.docs.length;
     numberAttending.innerHTML = newAttendeeCount + " People going";
-  })
+  });
+
+  function subscribeCurrentRSVP(user){
+    rsvpListener. firebase.firestore().collection('attendees')
+    .doc(user.uid).onSnapshot((doc)=>{
+      if (doc && doc.data()) {
+        const attendingResponse = doc.data().attending;
+
+        if (attendingResponse){
+          rsvpYes.className="clicked";
+          rsvpNo.className ="";
+        } else {
+          rsvpNo.className="clicked";
+          rsvpyes.className ="";
+        }
+
+      };
+    });
+  }
+
+  function subscribeCurrentRSVP(){
+if (rsvpListener != null){
+  rsvpListener();
+  rsvpListener =null;
+}
+rsvpYes.className ="";
+rsvpNo.className="";
+  }
