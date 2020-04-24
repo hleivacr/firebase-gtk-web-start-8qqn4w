@@ -110,3 +110,23 @@ function unsubscribeGuestbook(){
   }
 }
   
+  rsvpYes.onclick = () => {
+    const userDoc = firebase.firestore().collection('attendees')
+    .doc(firebase.auth().currentUser.uid);
+    userDoc.set({
+      attending: true
+    }).catch(console.error);
+  }
+  rsvpNo.onclick = () => {
+    const userDoc = firebase.firestore().collection('attendees')
+    .doc(firebase.auth().currentUser.uid);
+    userDoc.set({
+      attending: false
+    }).catch(console.error);
+  }
+
+  firebase.firestore().collection('attendees')
+  .where("attending", "==", true).onSnapshot((snap)=>{
+    const newAttendeeCount = snap.docs.length;
+    numberAttending.innerHTML = newAttendeeCount + " People going";
+  })
